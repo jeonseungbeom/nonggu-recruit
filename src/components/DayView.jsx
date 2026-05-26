@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { collection, query, where, orderBy, onSnapshot } from 'firebase/firestore';
+import { collection, query, where, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import { logger } from '../logger';
 import GuinPost from './GuinPost';
@@ -24,12 +24,13 @@ export default function DayView({ date, nickname, onClose }) {
 
     const q = query(
       collection(db, 'posts'),
-      where('date', '==', date),
-      orderBy('createdAt', 'asc')
+      where('date', '==', date)
     );
 
     const unsub = onSnapshot(q, (snap) => {
-      const data = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const data = snap.docs
+        .map(doc => ({ id: doc.id, ...doc.data() }))
+        .sort((a, b) => (a.createdAt?.seconds ?? 0) - (b.createdAt?.seconds ?? 0));
       logger.api('DayView', `${date} 게시글 수신`, {
         total: data.length,
         guin: data.filter(p => p.type === 'guin').length,

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
 import { logger } from '../logger';
 
@@ -31,12 +31,13 @@ export default function CommentSection({ postId, nickname }) {
 
     const q = query(
       collection(db, 'comments'),
-      where('postId', '==', postId),
-      orderBy('createdAt', 'asc')
+      where('postId', '==', postId)
     );
 
     const unsub = onSnapshot(q, (snap) => {
-      const data = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const data = snap.docs
+        .map(d => ({ id: d.id, ...d.data() }))
+        .sort((a, b) => (a.createdAt?.seconds ?? 0) - (b.createdAt?.seconds ?? 0));
       logger.api('CommentSection', '댓글 수신', { postId, count: data.length });
       setComments(data);
     }, (err) => {
