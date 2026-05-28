@@ -172,16 +172,6 @@ input {
   font-weight: 800;
 }
 
-.calendar__cell.today::after {
-  content: '';
-  position: absolute;
-  bottom: 4px;
-  width: 4px;
-  height: 4px;
-  background: var(--primary);
-  border-radius: 50%;
-}
-
 .calendar__cell.selected {
   background: var(--primary);
 }
@@ -189,10 +179,6 @@ input {
 .calendar__cell.selected .calendar__cell-num {
   color: white !important;
   font-weight: 700;
-}
-
-.calendar__cell.selected::after {
-  display: none;
 }
 
 .calendar__cell-num {
